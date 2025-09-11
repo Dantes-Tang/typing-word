@@ -81,7 +81,9 @@ onMounted(() => {
 
 <template>
   <Backgorund/>
-  <router-view/>
+  <div id="app" style="min-height: 100vh; background: #f5f5f5;">
+      <router-view/>
+  </div>
   <CollectNotice/>
   <ArticleContentDialog/>
   <SettingDialog/>
@@ -90,14 +92,14 @@ onMounted(() => {
 <style scoped lang="scss">
 @import "@/assets/css/variable";
 
-.main-page {
+#app {
   position: relative;
   z-index: 1;
   width: 100%;
-  height: 100%;
-  overflow: hidden;
-  font-size: 14rem;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
+  align-items: center; /* 添加垂直居中 */
 }
+
 </style>

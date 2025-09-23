@@ -4,8 +4,8 @@ export const users = [
     password: '123456'
   },
   {
-    username: 'user1',
-    password: 'qwerty'
+    username: '13980642989',
+    password: '123456'
   },
   {
       username: '18883503834',

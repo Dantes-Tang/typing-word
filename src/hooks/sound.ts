@@ -1,10 +1,8 @@
-import {onMounted, watch, watchEffect} from "vue"
+import {onMounted, watchEffect} from "vue"
 import {useSettingStore} from "@/stores/setting.ts";
-import {PronunciationApi} from "@/types.ts";
-import beep from "@/assets/sound/beep.wav";
-import correct from "@/assets/sound/correct.wav";
-import {$ref} from "vue/macros";
-import {SoundFileOptions} from "@/utils/const.ts";
+import {PronunciationApi} from "@/types/types.ts";
+
+import { SoundFileOptions } from "@/config/env.ts";
 
 export function useSound(audioSrcList?: string[], audioFileLength?: number) {
   let audioList: HTMLAudioElement[] = $ref([])
@@ -62,7 +60,7 @@ export function usePlayKeyboardAudio() {
 
 export function usePlayBeep() {
   const settingStore = useSettingStore()
-  const {play} = useSound([beep], 1)
+  const {play} = useSound([`/sound/beep.wav`], 1)
 
   function playAudio() {
     if (settingStore.effectSound) {
@@ -75,7 +73,7 @@ export function usePlayBeep() {
 
 export function usePlayCorrect() {
   const settingStore = useSettingStore()
-  const {play} = useSound([correct], 1)
+  const {play} = useSound([`/sound/correct.wav`], 1)
 
   function playAudio() {
     if (settingStore.effectSound) {
@@ -91,11 +89,11 @@ export function usePlayWordAudio() {
   const audio = $ref(new Audio())
 
   function playAudio(word: string) {
-    if (settingStore.wordSoundType === 'uk') {
-      audio.src = `${PronunciationApi}${word}&type=1`
-    } else if (settingStore.wordSoundType === 'us') {
-      audio.src = `${PronunciationApi}${word}&type=2`
+    let url = `${PronunciationApi}${word}&type=2`
+    if (settingStore.soundType === 'uk') {
+      url = `${PronunciationApi}${word}&type=1`
     }
+    audio.src = url
     audio.volume = settingStore.wordSoundVolume / 100
     audio.playbackRate = settingStore.wordSoundSpeed
     audio.play()
@@ -134,35 +132,12 @@ export function usePlayAudio(url: string) {
 export function getAudioFileUrl(name: string) {
   if (name === '机械键盘') {
     return [
-      `./sound/key-sounds/jixie/机械0.mp3`,
-      `./sound/key-sounds/jixie/机械1.mp3`,
-      `./sound/key-sounds/jixie/机械2.mp3`,
-      `./sound/key-sounds/jixie/机械3.mp3`,
+      `/sound/key-sounds/jixie/机械0.mp3`,
+      `/sound/key-sounds/jixie/机械1.mp3`,
+      `/sound/key-sounds/jixie/机械2.mp3`,
+      `/sound/key-sounds/jixie/机械3.mp3`,
     ]
   } else {
-    return [`./sound/key-sounds/${name}.mp3`]
+    return [`/sound/key-sounds/${name}.mp3`]
   }
-}
-
-export function useWatchAllSound() {
-  const settingStore = useSettingStore()
-
-  watch([
-    () => settingStore.wordSound,
-    () => settingStore.keyboardSound,
-    () => settingStore.translateSound,
-    () => settingStore.effectSound,
-  ], (n) => {
-    settingStore.allSound = n.some(v => v);
-  })
-}
-
-export function useChangeAllSound(e: boolean) {
-  const settingStore = useSettingStore()
-
-  settingStore.allSound = e
-  settingStore.wordSound = e
-  settingStore.keyboardSound = e
-  settingStore.translateSound = e
-  settingStore.effectSound = e
 }

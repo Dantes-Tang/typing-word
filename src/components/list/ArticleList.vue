@@ -1,9 +1,8 @@
 <script setup lang="ts">
 
-import Input from "@/components/Input.vue";
-import {$computed, $ref} from "vue/macros";
-import {Article} from "@/types.ts";
+import { Article } from "@/types/types.ts";
 import BaseList from "@/components/list/BaseList.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
 
 const props = withDefaults(defineProps<{
   list: Article[],
@@ -21,11 +20,32 @@ const emit = defineEmits<{
 let searchKey = $ref('')
 let localList = $computed(() => {
   if (searchKey) {
-    return props.list.filter((item: Article) => {
-      //把搜索内容，分词之后，判断是否有这个词，比单纯遍历包含体验更好
-      return searchKey.toLowerCase().split(' ').filter(v => v).some(value => {
+    //把搜索内容，分词之后，判断是否有这个词，比单纯遍历包含体验更好
+    let t = searchKey.toLowerCase()
+    let strings = t.split(' ').filter(v => v);
+    let res = props.list.filter((item: Article) => {
+      return strings.some(value => {
         return item.title.toLowerCase().includes(value) || item.titleTranslate.toLowerCase().includes(value)
       })
+    })
+    try {
+      let d = Number(t)
+      //如果是纯数字，把那一条加进去
+      if (!isNaN(d)) {
+        if (d - 1 < props.list.length) {
+          res.push(props.list[d - 1])
+        }
+      }
+    } catch (err) {
+    }
+    return res.sort((a: Article, b: Article) => {
+      //使完整包含的条目更靠前
+      const aMatch = a.title.toLowerCase().includes(t);
+      const bMatch = b.title.toLowerCase().includes(t);
+
+      if (aMatch && !bMatch) return -1; // a 靠前
+      if (!aMatch && bMatch) return 1;  // b 靠前
+      return 0; // 都匹配或都不匹配，保持原顺序
     })
   } else {
     return props.list
@@ -49,7 +69,14 @@ defineExpose({scrollToBottom, scrollToItem})
 <template>
   <div class="list">
     <div class="search">
-      <Input v-model="searchKey"/>
+      <BaseInput
+          clearable
+          v-model="searchKey"
+      >
+        <template #subfix>
+          <IconFluentSearch24Regular class="text-lg text-gray"/>
+        </template>
+      </BaseInput>
     </div>
     <BaseList
         ref="listRef"
@@ -60,7 +87,7 @@ defineExpose({scrollToBottom, scrollToItem})
         <slot name="prefix" :item="item" :index="index"></slot>
       </template>
       <template v-slot="{ item, index }">
-        <div class="item-title" @click.stop="emit('title',{item,index})">
+        <div class="item-title">
           <div class="name"> {{ `${searchKey ? '' : (index + 1) + '. '}${item.title}` }}</div>
         </div>
         <div class="item-sub-title" v-if="item.titleTranslate && showTranslate">
@@ -78,18 +105,18 @@ defineExpose({scrollToBottom, scrollToItem})
 .list {
   display: flex;
   flex-direction: column;
-  gap: 15rem;
+  gap: 1rem;
   flex: 1;
   overflow: hidden;
 
   .search {
     box-sizing: border-box;
     width: 100%;
-    padding: 0 var(--space);
+    padding-right: var(--space);
   }
 
   .translate {
-    font-size: 16rem;
+    font-size: 1rem;
   }
 }
 </style>

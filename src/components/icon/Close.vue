@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import {Icon} from "@iconify/vue";
-import Tooltip from "@/components/Tooltip.vue";
+import Tooltip from "@/components/base/Tooltip.vue";
 
 defineEmits(['click'])
 defineProps<{
@@ -13,8 +12,7 @@ defineProps<{
        @click="$emit('click')"
   >
     <Tooltip :title="title">
-      <Icon icon="carbon:close-outline"
-      />
+      <IconFluentDismissCircle16Regular/>
     </Tooltip>
   </div>
 </template>
@@ -25,6 +23,6 @@ defineProps<{
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18rem;
+  font-size: 1.1rem;
 }
 </style>

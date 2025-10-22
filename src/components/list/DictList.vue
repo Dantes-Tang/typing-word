@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import {Dict} from "@/types.ts";
-import {Icon} from "@iconify/vue";
-import DictItem from "@/components/list/DictItem.vue";
+import {Dict} from "@/types/types.ts";
+import Book from "@/components/Book.vue";
 
 defineProps<{
-  list?: Dict[],
+  list?: Partial<Dict>[],
   selectId?: string
+  quantifier?: string
 }>()
 
 const emit = defineEmits<{
   selectDict: [val: { dict: any, index: number }]
+  del: [val: { dict: any, index: number }]
   detail: [],
   add: []
 }>()
@@ -17,12 +18,12 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="dict-list">
-    <DictItem v-for="(dict,index) in list"
-              :active="selectId === dict.id"
-              @click="emit('selectDict',{dict,index})"
-              @add="emit('add')"
-              :dict="dict"/>
+  <div class="flex gap-4 flex-wrap">
+    <Book v-for="(dict,index) in list"
+          :is-add="false"
+          @click="emit('selectDict',{dict,index})"
+          :quantifier="quantifier"
+          :item="dict"/>
   </div>
 </template>
 
@@ -30,7 +31,7 @@ const emit = defineEmits<{
 .dict-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 15rem;
+  gap: 1rem;
 }
 
 </style>

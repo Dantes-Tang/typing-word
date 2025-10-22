@@ -1,8 +1,12 @@
 <script lang="jsx">
-import {nextTick, Teleport, Transition} from "vue";
+import {Teleport, Transition} from 'vue'
 
 export default {
   name: "PopConfirm",
+  components: {
+    Teleport,
+    Transition
+  },
   props: {
     title: {
       type: String,
@@ -32,13 +36,13 @@ export default {
   },
   methods: {
     showPop(e) {
-      if (this.disabled) return
+      if (this.disabled) return this.$emit('confirm')
       e?.stopPropagation()
       let rect = e.target.getBoundingClientRect()
       this.show = true
-      nextTick(() => {
+      this.$nextTick(() => {
         let tip = this.$refs?.tip?.getBoundingClientRect()
-        console.log('rect', rect, tip)
+        // console.log('rect', rect, tip)
         if (!tip) return
         if (rect.top < 150) {
           this.$refs.tip.style.top = rect.top + rect.height + tip.height + 30 + 'px'
@@ -61,13 +65,13 @@ export default {
             <Transition>
               {
                   this.show && (
-                      <div ref="tip" className="pop-confirm-content">
-                        <div className="text">
+                      <div ref="tip" class="pop-confirm-content">
+                        <div class="text">
                           {this.title}
                         </div>
-                        <div className="options">
+                        <div class="options">
                           <div onClick={() => this.show = false}>取消</div>
-                          <div className="main" onClick={() => this.confirm()}>确认</div>
+                          <div class="main" onClick={() => this.confirm()}>确认</div>
                         </div>
                       </div>
                   )
@@ -86,27 +90,27 @@ $bg-color: rgb(226, 226, 226);
 .pop-confirm-content {
   position: fixed;
   background: var(--color-tooltip-bg);
-  padding: 15rem;
-  border-radius: 4rem;
-  transform: translate(-50%, calc(-100% - 10rem));
+  padding: 1rem;
+  border-radius: .3rem;
+  transform: translate(-50%, calc(-100% - .6rem));
   box-shadow: 0 0 6px 1px var(--color-tooltip-shadow);
   z-index: 999;
 
   .text {
     color: var(--color-font-1);
     text-align: start;
-    font-size: 14rem;
-    width: 150rem;
-    min-width: 150rem;
+    font-size: 1rem;
+    width: 9rem;
+    min-width: 9rem;
   }
 
   .options {
-    margin-top: 15rem;
+    margin-top: .9rem;
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 12rem;
-    font-size: 12rem;
+    gap: .7rem;
+    font-size: .9rem;
 
     div {
       cursor: pointer;
@@ -115,8 +119,8 @@ $bg-color: rgb(226, 226, 226);
     .main {
       color: gray;
       background: $bg-color;
-      padding: 3rem 10rem;
-      border-radius: 4rem;
+      padding: .2rem .6rem;
+      border-radius: .24rem;
     }
   }
 }

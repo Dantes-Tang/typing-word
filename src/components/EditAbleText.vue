@@ -1,15 +1,19 @@
 <script setup lang="ts">
 
 import BaseButton from "@/components/BaseButton.vue";
-import {$ref} from "vue/macros";
+
 import {watchEffect} from "vue";
+import Textarea from "@/components/base/Textarea.vue";
+import Toast from "@/components/base/toast/Toast.ts";
 
 interface IProps {
   value: string,
+  disabled: boolean,
 }
 
 const props = withDefaults(defineProps<IProps>(), {
   value: '',
+  disabled: false,
 })
 
 const emit = defineEmits([
@@ -29,7 +33,9 @@ function save() {
 }
 
 function toggle() {
+  if (props.disabled) return Toast.info('请等候翻译完成')
   edit = !edit
+  editVal = props.value
 }
 </script>
 
@@ -37,23 +43,23 @@ function toggle() {
   <div
       v-if="edit"
       class="edit-text">
-    <el-input
+    <Textarea
         v-model="editVal"
         ref="inputRef"
+        textarea
         autosize
         autofocus
         type="textarea"
-        :input-style="`color: var(--color-font-1);font-size: 16rem;`"
+        :input-style="`color: var(--color-font-1);font-size: 1rem;`"
     />
-    <div class="options">
+    <div class="flex justify-end mt-2">
       <BaseButton @click="toggle">取消</BaseButton>
-      <BaseButton @click="save">保存</BaseButton>
+      <BaseButton @click="save">应用</BaseButton>
     </div>
   </div>
   <div
       v-else
       class="text"
-      :style="`font-size: 16rem;`"
       @click="toggle">
     {{ value }}
   </div>
@@ -61,19 +67,13 @@ function toggle() {
 
 <style scoped lang="scss">
 .edit-text {
-  margin-top: 10rem;
+  margin-top: .6rem;
   color: var(--color-font-1);
-
-  .options {
-    margin-top: 10rem;
-    gap: 10rem;
-    display: flex;
-    justify-content: flex-end;
-  }
 }
 
 .text {
   color: var(--color-font-1);
-  min-height: 18rem;
+  font-size: 1.2rem;
+  min-height: 1.1rem;
 }
 </style>

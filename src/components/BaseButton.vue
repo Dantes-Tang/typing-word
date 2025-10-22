@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import Tooltip from "@/components/Tooltip.vue";
-import {Icon} from "@iconify/vue";
+import Tooltip from "@/components/base/Tooltip.vue";
 
 interface IProps {
   keyboard?: string,
@@ -8,7 +7,7 @@ interface IProps {
   disabled?: boolean
   loading?: boolean
   size?: 'small' | 'normal' | 'large',
-  type?: 'primary' | 'link'
+  type?: 'primary' | 'link' | 'info'
 }
 
 withDefaults(defineProps<IProps>(), {
@@ -21,48 +20,50 @@ defineEmits(['click'])
 </script>
 
 <template>
-  <Tooltip :disabled="!keyboard" :title="`快捷键: ${keyboard}`">
+  <Tooltip :disabled="!keyboard" :title="`${keyboard}`">
     <div class="base-button"
+         v-bind="$attrs"
          @click="e => (!disabled && !loading) && $emit('click',e)"
          :class="[
              active && 'active',
              size,
              type,
              (disabled||loading) && 'disabled',
-             !disabled && 'hvr-grow'
          ]">
       <span :style="{opacity:loading?0:1}"><slot></slot></span>
-      <Icon v-if="loading"
-            class="loading"
-            icon="eos-icons:loading"
-            width="18"
-            color="#ffffff"
+      <IconEosIconsLoading
+          v-if="loading"
+          class="loading"
+          width="18"
+          :color="type === 'info'?'#000000':'#ffffff'"
       />
-      <div class="key-notice" v-if="keyboard">
-        <Icon icon="bi:keyboard" width="14" color="#ffffff"/>
-        <span class="key">{{ keyboard }}</span>
-      </div>
     </div>
   </Tooltip>
 </template>
 
 <style scoped lang="scss">
-@import "@/assets/css/style";
 
 .base-button {
   cursor: pointer;
-  border-radius: 6rem;
-  padding: 0 15rem;
-  display: flex;
+  box-sizing: border-box;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all .3s;
-  //background: #999;
-  //background: rgb(60, 63, 65);
-  //background: var(--color-second-bg);
-  height: 36rem;
-  line-height: 1;
-  position: relative;
+  outline: none;
+  text-align: center;
+  transition: .1s;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  border-radius: .3rem;
+  padding: 0 0.9rem;
+  font-size: .9rem;
+  height: 2rem;
+  color: white;
+
+  & + .base-button {
+    margin-left: var(--space);
+  }
 
   .loading {
     position: absolute;
@@ -75,26 +76,21 @@ defineEmits(['click'])
   }
 
   &.small {
-    height: 30rem;
-
-    & > span {
-      font-size: 13rem;
-    }
+    border-radius: 0.2rem;
+    padding: 0 0.8rem;
+    height: 1.6rem;
+    font-size: .8rem;
   }
 
   &.large {
-    height: 50rem;
-    font-size: 18rem;
-    padding: 0 22rem;
-    & > span {
-      font-size: 18rem;
-    }
+    padding: 0 1.3rem;
+    height: 2.4rem;
+    font-size: 0.9rem;
   }
 
-
   & > span {
-    font-size: 16rem;
-    color: white;
+    line-height: 1;
+    transform: translateY(-5%);
 
     :deep(a) {
       color: white;
@@ -102,12 +98,11 @@ defineEmits(['click'])
   }
 
   &:hover {
-    opacity: .7;
+    opacity: .8;
   }
 
-
   &.primary {
-    background: rgb(75, 85, 99);
+    background: var(--btn-primary);
   }
 
   &.link {
@@ -115,26 +110,18 @@ defineEmits(['click'])
     border-bottom: 2px solid transparent;
 
     &:hover {
-      border-bottom: 2px solid var(--color-font-1);
+      border-bottom: 2px solid var(--color-font-2);
     }
+  }
+
+  &.info {
+    background: var(--btn-info);
+    border: 1px solid var(--color-main-text);
+    color: var(--color-main-text);
   }
 
   &.active {
     opacity: .4;
-  }
-}
-
-.key-notice {
-  margin-left: 10rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12rem;
-  color: white;
-  //gap: 2rem;
-
-  .key {
-    transform: scale(0.8);
   }
 }
 </style>

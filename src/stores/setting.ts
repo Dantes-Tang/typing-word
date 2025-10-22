@@ -1,112 +1,133 @@
 import { defineStore } from "pinia"
-import { cloneDeep, merge } from "lodash-es";
-import { DefaultShortcutKeyMap } from "@/types.ts";
-import { SAVE_SETTING_KEY } from "@/utils/const.ts";
-import { checkAndUpgradeSaveDict, checkAndUpgradeSaveSetting } from "@/utils";
+import { checkAndUpgradeSaveSetting, cloneDeep } from "@/utils";
+import { DefaultShortcutKeyMap } from "@/types/types.ts";
+import { get } from "idb-keyval";
+import { CAN_REQUEST, SAVE_SETTING_KEY } from "@/config/env.ts";
+import { getSetting } from "@/apis";
 
 export interface SettingState {
-  showToolbar: boolean,
-  show: boolean,
+  soundType: string,
 
-  allSound: boolean,
   wordSound: boolean,
   wordSoundVolume: number,
   wordSoundSpeed: number,
-  wordSoundType: string,
+
+  articleSound: boolean,
+  articleAutoPlayNext: boolean,
+  articleSoundVolume: number,
+  articleSoundSpeed: number,
+
   keyboardSound: boolean,
   keyboardSoundVolume: number,
   keyboardSoundFile: string,
-  translateSound: boolean,
-  translateSoundVolume: number,
+
   effectSound: boolean,
   effectSoundVolume: number,
-  repeatCount: number,
-  repeatCustomCount?: number,
-  dictation: boolean,
-  translate: boolean,
-  showNearWord: boolean
-  ignoreCase: boolean
-  allowWordTip: boolean
-  waitTimeForChangeWord: number
-  autoNext: boolean
-  dictationShowWordLength: boolean//默写时显示单词长度，即用下划线 _ 来显示每个字符
+
+  repeatCount: number, //重复次数
+  repeatCustomCount?: number, //自定义重复次数
+  dictation: boolean,//显示默写
+  translate: boolean, //显示翻译
+  showNearWord: boolean //显示上/下一个词
+  ignoreCase: boolean //忽略大小写
+  allowWordTip: boolean //默写时时否允许查看提示
+  waitTimeForChangeWord: number // 切下一个词的等待时间
   fontSize: {
     articleForeignFontSize: number,
     articleTranslateFontSize: number,
     wordForeignFontSize: number,
     wordTranslateFontSize: number,
   },
-  showPanel: boolean,
+  showToolbar: boolean, //收起/展开工具栏
+  showPanel: boolean, // 收起/展开面板
+  sideExpand: boolean, //收起/展开左侧侧边栏
   theme: string,
-  collapse: boolean,
-  chapterWordNumber: number,
   shortcutKeyMap: Record<string, string>,
   first: boolean
+  firstTime: number
   load: boolean
+  conflictNotice: boolean // 其他脚本/插件冲突提示
+  ignoreSimpleWord: boolean // 忽略简单词
+  wordPracticeMode: number // 单词练习模式，0：智能模式，1：自由模式
+  disableShowPracticeSettingDialog: boolean // 不默认显示练习设置弹框
+  autoNextWord: boolean //自动切换下一个单词
+  inputWrongClear: boolean //单词输入错误，清空已输入内容
 }
 
-export const DefaultSettingState = (): SettingState => ({
-  showToolbar: true,
-  show: false,
-  showPanel: true,
+export const getDefaultSettingState = (): SettingState => ({
+  soundType: 'us',
 
-  allSound: true,
   wordSound: true,
   wordSoundVolume: 100,
   wordSoundSpeed: 1,
-  wordSoundType: 'us',
+
+  articleSound: true,
+  articleAutoPlayNext: false,
+  articleSoundVolume: 100,
+  articleSoundSpeed: 1,
+
   keyboardSound: true,
   keyboardSoundVolume: 100,
   keyboardSoundFile: '机械键盘2',
-  translateSound: true,
-  translateSoundVolume: 100,
+
   effectSound: true,
   effectSoundVolume: 100,
+
   repeatCount: 1,
   repeatCustomCount: null,
   dictation: false,
   translate: true,
-
   showNearWord: true,
   ignoreCase: true,
   allowWordTip: true,
+  waitTimeForChangeWord: 300,
   fontSize: {
     articleForeignFontSize: 48,
     articleTranslateFontSize: 20,
     wordForeignFontSize: 48,
     wordTranslateFontSize: 20,
   },
-  waitTimeForChangeWord: 300,
-  autoNext: true,
-  dictationShowWordLength: true,
+  showToolbar: true,
+  showPanel: true,
+  sideExpand: false,
   theme: 'auto',
-  collapse: false,
-  chapterWordNumber: DefaultChapterWordNumber,
   shortcutKeyMap: cloneDeep(DefaultShortcutKeyMap),
   first: true,
-  load: false
+  firstTime: Date.now(),
+  load: false,
+  conflictNotice: true,
+  ignoreSimpleWord: false,
+  wordPracticeMode: 0,
+  disableShowPracticeSettingDialog: false,
+  autoNextWord: true,
+  inputWrongClear: false,
 })
-export const DefaultChapterWordNumber = 30
+
 export const useSettingStore = defineStore('setting', {
   state: (): SettingState => {
-    return DefaultSettingState()
+    return getDefaultSettingState()
   },
   actions: {
     setState(obj: any) {
-      //这样不会丢失watch的值的引用
-      merge(this, obj)
+      this.$patch(obj)
     },
     init() {
-      return new Promise(resolve => {
+      return new Promise(async resolve => {
+        //TODO 后面记得删除了
         let configStr = localStorage.getItem(SAVE_SETTING_KEY.key)
-        if (!configStr) configStr = localStorage.getItem(SAVE_SETTING_KEY.oldKey)
+        let configStr2 = await get(SAVE_SETTING_KEY.key)
+        if (configStr2) {
+          //兼容localStorage.getItem
+          configStr = configStr2
+        }
         let data = checkAndUpgradeSaveSetting(configStr)
-        this.setState(data)
-        localStorage.setItem(SAVE_SETTING_KEY.key, JSON.stringify({
-          val: this.$state,
-          version: SAVE_SETTING_KEY.version
-        }))
-        this.load = true
+        if (CAN_REQUEST) {
+          let res = await getSetting()
+          if (res.success) {
+            Object.assign(data, res.data)
+          }
+        }
+        this.setState({...data, load: true})
         resolve(true)
       })
     }

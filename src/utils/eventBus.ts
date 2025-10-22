@@ -1,4 +1,5 @@
 import mitt from 'mitt'
+import {onMounted, onUnmounted} from "vue";
 
 export const emitter = mitt()
 export const EventKey = {
@@ -6,17 +7,35 @@ export const EventKey = {
   changeDict: 'changeDict',
   openStatModal: 'openStatModal',
   openWordListModal: 'openWordListModal',
-  openArticleContentModal: 'openArticleContentModal',
-  openDictModal: 'openDictModal',
-  openArticleListModal: 'openArticleListModal',
   closeOther: 'closeOther',
   keydown: 'keydown',
   keyup: 'keyup',
   onTyping: 'onTyping',
-  repeat: 'repeat',
-  next: 'next',
+  repeatStudy: 'repeatStudy',
+  continueStudy: 'continueStudy',
   write: 'write',
   editDict: 'editDict',
   openMyDictDialog: 'openMyDictDialog',
-  jumpSpecifiedChapter: 'jumpSpecifiedChapter',
+  stateInitEnd: 'stateInitEnd',
+  randomWrite: 'randomWrite',
+}
+
+export function useEvent(key: string, func: any) {
+  onMounted(() => {
+    emitter.on(key, func)
+  })
+
+  onUnmounted(() => {
+    emitter.off(key, func)
+  })
+}
+
+export function useEvents(arrs: any[],) {
+  onMounted(() => {
+    arrs.map((arr) => emitter.on(arr[0], arr[1]))
+  })
+
+  onUnmounted(() => {
+    arrs.map((arr) => emitter.off(arr[0], arr[1]))
+  })
 }

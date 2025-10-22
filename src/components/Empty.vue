@@ -23,20 +23,21 @@ defineEmits<{
 .empty {
   width: 100%;
   height: 100%;
+  min-height: 18rem;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  font-size: 12rem;
-  gap: 20rem;
+  font-size: .9rem;
+  gap: 1.3rem;
 
   span {
     font-family: var(--font-family);
   }
 
   img {
-    margin-top: -50rem;
-    width: 120rem;
+    margin-top: -3rem;
+    width: 9rem;
   }
 }
 </style>

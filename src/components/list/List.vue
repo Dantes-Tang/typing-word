@@ -1,10 +1,10 @@
 <script setup lang="ts" generic="T extends {id:string}">
 
 import BaseIcon from "@/components/BaseIcon.vue";
-import Input from "@/components/Input.vue";
-import {$computed, $ref} from "vue/macros";
-import {cloneDeep, throttle} from "lodash-es";
-import {Article} from "@/types.ts";
+import { cloneDeep, throttle } from "@/utils";
+import { Article } from "@/types/types.ts";
+import DeleteIcon from "@/components/icon/DeleteIcon.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
 
 interface IProps {
   list: T[]
@@ -79,6 +79,8 @@ function delItem(item: T) {
   let rIndex = props.list.findIndex(v => v.id === item.id)
   if (rIndex > -1) {
     localList.splice(rIndex, 1)
+    //触发set
+    localList = localList
   }
 }
 
@@ -93,7 +95,6 @@ function scrollBottom() {
 }
 
 defineExpose({scrollBottom})
-
 </script>
 
 <template>
@@ -101,7 +102,14 @@ defineExpose({scrollBottom})
        ref="el"
   >
     <div class="search">
-      <Input v-model="searchKey"/>
+      <BaseInput
+          clearable
+          v-model="searchKey"
+      >
+        <template #subfix>
+          <IconFluentSearch24Regular class="text-lg text-gray"/>
+        </template>
+      </BaseInput>
     </div>
     <transition-group name="drag" class="list" tag="div">
       <div class="item"
@@ -124,14 +132,17 @@ defineExpose({scrollBottom})
         </div>
         <div class="right">
           <BaseIcon
-              @click="delItem(item)"
-              title="删除" icon="fluent:delete-24-regular"/>
+              @click.stop="delItem(item)"
+              title="删除">
+            <DeleteIcon/>
+          </BaseIcon>
           <div
               @mousedown="draggable = true"
               @mouseup="draggable = false"
           >
-            <BaseIcon
-                icon="carbon:move"/>
+            <BaseIcon>
+              <IconFluentArrowMove20Regular/>
+            </BaseIcon>
           </div>
         </div>
       </div>
@@ -162,10 +173,10 @@ defineExpose({scrollBottom})
   transition: all .3s;
   flex: 1;
   overflow: overlay;
-  padding-right: 5rem;
+  padding-right: .3rem;
 
   .search {
-    margin: 10rem 0;
+    margin: .6rem 0;
   }
 
   .list {
@@ -173,9 +184,9 @@ defineExpose({scrollBottom})
       box-sizing: border-box;
       background: var(--color-item-bg);
       color: var(--color-font-1);
-      border-radius: 8rem;
-      margin-bottom: 10rem;
-      padding: 10rem;
+      border-radius: .5rem;
+      margin-bottom: .6rem;
+      padding: .6rem;
       display: flex;
       justify-content: space-between;
       transition: all .3s;

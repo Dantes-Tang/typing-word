@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, watch} from "vue";
-import Tooltip from "@/components/Tooltip.vue";
-import {Icon} from '@iconify/vue';
-import {useEventListener} from "@/hooks/event.ts";
-import {$ref} from "vue/macros";
+import { onMounted, onUnmounted, watch } from "vue";
+import Tooltip from "@/components/base/Tooltip.vue";
+import { useEventListener } from "@/hooks/event.ts";
+
 import BaseButton from "@/components/BaseButton.vue";
-import {useRuntimeStore} from "@/stores/runtime.ts";
+import { useRuntimeStore } from "@/stores/runtime.ts";
 
 export interface ModalProps {
   modelValue?: boolean,
@@ -19,6 +18,7 @@ export interface ModalProps {
   confirmButtonText?: string
   cancelButtonText?: string,
   keyboard?: boolean,
+  closeOnClickBg?: boolean,
   confirm?: any
   beforeClose?: any
 }
@@ -26,6 +26,7 @@ export interface ModalProps {
 const props = withDefaults(defineProps<ModalProps>(), {
   modelValue: undefined,
   showClose: true,
+  closeOnClickBg: true,
   fullScreen: false,
   footer: false,
   header: true,
@@ -97,7 +98,6 @@ watch(() => props.modelValue, n => {
 })
 
 onMounted(() => {
-  // console.log('props.modelValue', props.modelValue)
   if (props.modelValue === undefined) {
     visible = true
     id = Date.now()
@@ -148,7 +148,7 @@ async function cancel() {
       <div class="modal-mask"
            ref="maskRef"
            v-if="!fullScreen"
-           @click.stop="close"></div>
+           @click.stop="closeOnClickBg && close()"></div>
       <div class="modal"
            ref="modalRef"
            :class="[
@@ -156,24 +156,24 @@ async function cancel() {
             ]"
       >
         <Tooltip title="关闭">
-          <Icon @click="close"
-                v-if="showClose"
-                class="close hvr-grow pointer"
-                width="24" color="#929596"
-                icon="ion:close-outline"/>
+          <IconFluentDismiss20Regular @click="close"
+                                      v-if="showClose"
+                                      class="close cursor-pointer"
+                                      width="24"/>
         </Tooltip>
         <div class="modal-header" v-if="header">
           <div class="title">{{ props.title }}</div>
         </div>
         <div class="modal-body" :class="{padding}">
           <slot></slot>
-          <div v-if="content" class="content">{{ content }}</div>
+          <div v-if="content" class="content max-h-60vh">{{ content }}</div>
         </div>
         <div class="modal-footer" v-if="footer">
-          <div class="left">
+          <div class="left flex items-end">
+            <slot name="footer-left"></slot>
           </div>
           <div class="right">
-            <BaseButton type="link" @click="cancel">{{ cancelButtonText }}</BaseButton>
+            <BaseButton type="info" @click="cancel">{{ cancelButtonText }}</BaseButton>
             <BaseButton
                 :loading="confirmButtonLoading"
                 @click="ok">{{ confirmButtonText }}
@@ -186,20 +186,17 @@ async function cancel() {
 </template>
 
 <style scoped lang="scss">
-@import "@/assets/css/variable.scss";
+
 
 $modal-mask-bg: rgba(#000, .45);
-$radius: 24rem;
+$radius: .5rem;
 $time: 0.3s;
-$header-height: 60rem;
+$header-height: 4rem;
 
 @keyframes bounce-in {
   0% {
     opacity: 0;
     transform: scale(0);
-  }
-  50% {
-    transform: scale(1.15);
   }
   100% {
     opacity: 1;
@@ -280,7 +277,7 @@ $header-height: 60rem;
 
   .modal {
     position: relative;
-    background: var(--color-second-bg);
+    background: var(--color-second);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -288,8 +285,8 @@ $header-height: 60rem;
 
     .close {
       position: absolute;
-      right: 20rem;
-      top: 20rem;
+      right: 1.2rem;
+      top: 1.2rem;
       z-index: 999;
     }
 
@@ -297,75 +294,42 @@ $header-height: 60rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 24rem 24rem 16rem;
+      padding: 1.3rem 1.3rem 1rem;
       border-radius: $radius $radius 0 0;
 
       .title {
         color: var(--color-font-1);
         font-weight: bold;
-        font-size: 24rem;
-        line-height: 33rem;
+        font-size: 1.3rem;
+        line-height: 1.8rem;
       }
     }
 
     .modal-body {
       box-sizing: border-box;
-      color: rgba(255, 255, 255, 0.8);
+      color: var(--color-main-text);
       font-weight: 400;
-      font-size: 18rem;
-      line-height: 27rem;
+      font-size: 1.1rem;
+      line-height: 1.7rem;
       width: 100%;
       flex: 1;
       overflow: hidden;
       display: flex;
 
       &.padding {
-        padding: 4rem 24rem 24rem;
+        padding: .2rem 1.6rem 1.6rem;
       }
 
       .content {
-        width: 350rem;
-        color: var(--color-font-1);
-        padding: 4rem 24rem 24rem;
+        width: 25rem;
+        padding: .2rem 1.6rem 1.6rem;
       }
     }
 
     .modal-footer {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 16rem 24rem;
-      color: #fff;
-      font-size: 18rem;
-      background: rgba(0, 0, 0, .2);
-      border-radius: 0 0 24rem 24rem;
-
-      .left {
-        display: flex;
-        align-items: center;
-        height: 100%;
-
-        .text {
-          color: white;
-          font-size: 16rem;
-          cursor: pointer;
-        }
-
-        &.active {
-          .text {
-            color: white;
-          }
-        }
-      }
-
-      .right {
-        display: flex;
-        flex: 1;
-        align-items: center;
-        justify-content: flex-end;
-        height: 100%;
-        gap: var(--space);
-      }
+      padding: var(--space);
     }
   }
 }

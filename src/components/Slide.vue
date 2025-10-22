@@ -1,7 +1,4 @@
 <script setup lang="ts">
-
-import {$computed} from "vue/macros";
-
 const props = defineProps<{
   width?: string,
   height?: string,
@@ -38,10 +35,6 @@ const style = $computed(() => {
     height: 100%;
     display: flex;
     transition: all .3s;
-  }
-
-  :deep(.page) {
-    width: 50%;
   }
 }
 

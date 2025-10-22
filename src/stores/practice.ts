@@ -1,28 +1,35 @@
 import {defineStore} from "pinia"
-import {Word} from "@/types.ts"
 
 export interface PracticeState {
-  wrongWords: Word[],
-  repeatNumber: number,
+  step: number,
   startDate: number,
+  spend: number,
   total: number,
   index: number,//当前输入的第几个，用于和total计算进度
+  newWordNumber: number,
+  reviewWordNumber: number,
+  writeWordNumber: number,
   inputWordNumber: number,//当前总输入了多少个单词（不包含跳过）
-  wrongWordNumber: number,
-  correctRate: number,
+  wrong: number,
+  startIndex: number,
+  endIndex: number,
 }
 
 export const usePracticeStore = defineStore('practice', {
   state: (): PracticeState => {
     return {
-      wrongWords: [],
-      repeatNumber: 0,
+      step: 0,
+      spend: 0,
       startDate: Date.now(),
-      correctRate: -1,
       total: 0,
       index: 0,
+      startIndex: 0,
+      endIndex: 0,
+      newWordNumber: 0,
+      reviewWordNumber: 0,
+      writeWordNumber: 0,
       inputWordNumber: 0,
-      wrongWordNumber: 0,
+      wrong: 0,
     }
   },
 })

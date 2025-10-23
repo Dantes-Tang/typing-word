@@ -1,6 +1,7 @@
 <template>
   <div class="login-container" @click="hideImage">
-    <h1>Easy Word</h1>
+    <h1>Easy Words</h1>
+    <h3>一个简单的英语学习网站</h3>
     <form @submit.prevent="handleLogin" class="login-form">
       <div class="form-group">
         <label>帐 号:</label>
@@ -123,9 +124,25 @@ export default {
 }
 
 h1 {
-  font-size: 24px;  /* 增大标题字体 */
+  font-size: 24px;
   margin-bottom: 30px;
   text-align: center;
+  background: linear-gradient(120deg, #bd34fe 30%, #41d1ff);
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+h3 {
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 20px;
+  background: linear-gradient(120deg, #bd34fe 30%, #41d1ff);
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 label {

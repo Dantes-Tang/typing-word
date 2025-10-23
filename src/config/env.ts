@@ -1,10 +1,10 @@
 import { useBaseStore } from "@/stores/base.ts";
 
 export const GITHUB = 'https://github.com/zyronon/TypeWords'
-export const ProjectName = 'Type Words'
-export const Host = '2study.top'
+export const ProjectName = 'Easy Words'
+export const Host = 'word.easy-words.top/'
 export const Origin = `https://${Host}`
-export const APP_NAME = 'Type Words'
+export const APP_NAME = 'Easy Words'
 
 const common = {
   word_dict_list_version: 1

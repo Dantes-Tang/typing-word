@@ -377,7 +377,7 @@ function importOldData() {
             <IconFluentDatabasePerson20Regular width="20"/>
             <span>数据管理</span>
           </div>
-          <div class="tab" :class="tabIndex === 5 && 'active'" @click="()=>{
+          <!-- <div class="tab" :class="tabIndex === 5 && 'active'" @click="()=>{
             tabIndex = 5
             runtimeStore.isNew = false
             set(APP_VERSION.key,APP_VERSION.version)
@@ -385,11 +385,11 @@ function importOldData() {
             <IconFluentTextBulletListSquare20Regular width="20"/>
             <span>更新日志</span>
             <div class="red-point" v-if="runtimeStore.isNew"></div>
-          </div>
-          <div class="tab" :class="tabIndex === 6 && 'active'" @click="tabIndex = 6">
+          </div> -->
+          <!-- <div class="tab" :class="tabIndex === 6 && 'active'" @click="tabIndex = 6">
             <IconFluentPerson20Regular width="20"/>
             <span>关于</span>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="content">
@@ -422,7 +422,7 @@ function importOldData() {
                        v-if="settingStore.ignoreSimpleWord"
           >
             <Textarea
-                placeholder="多个单词用英文逗号隔号"
+                placeholder="多个单词用英文逗号隔开"
                 v-model="simpleWords" :autosize="{minRows: 6, maxRows: 10}"/>
           </SettingItem>
 
@@ -694,19 +694,12 @@ function importOldData() {
         </div>
 
         <div v-if="tabIndex === 6" class="center flex-col">
-          <h1>Type Words</h1>
+          <h1>Easy Words</h1>
           <p class="w-100 text-xl">
-            感谢使用本项目！本项目是开源项目，如果觉得有帮助，请在 GitHub 点个 Star，您的支持是我持续改进的动力。
+                感谢使用Easy Words 英语练习网站，
           </p>
-          <p>
-            GitHub地址：<a href="https://github.com/zyronon/TypeWords" target="_blank">https://github.com/zyronon/TypeWords</a>
-          </p>
-          <p>
-            反馈：<a
-              href="https://github.com/zyronon/TypeWords/issues" target="_blank">https://github.com/zyronon/TypeWords/issues</a>
-          </p>
-          <p>
-            作者邮箱：<a href="mailto:zyronon@163.com">zyronon@163.com</a>
+          <p class="w-100 text-xl">
+            在助力英语学习的道路上，我们乐此不疲。
           </p>
           <div class="text-md color-gray mt-10">
             Build {{ gitLastCommitHash }}

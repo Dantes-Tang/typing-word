@@ -11,8 +11,9 @@ import DictList from "@/pages/word/DictList.vue";
 import BookList from "@/pages/article/BookList.vue";
 import Setting from "@/pages/setting/Setting.vue";
 import Home from "@/pages/home/index.vue";
-import Login from "@/pages/user/login.vue";
+// import Login from "@/pages/user/login.vue";
 import User from "@/pages/user/index.vue";
+import Login from '@/views/Login.vue'
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -35,13 +36,14 @@ export const routes: RouteRecordRaw[] = [
       {path: 'book-detail', component: BookDetail},
       {path: 'book-list', component: BookList},
       {path: 'setting', component: Setting},
-      {path: 'login', component: Login},
+//       {path: 'login', component: Login},
       {path: 'user', component: User},
+      {path: 'login', name: 'Login', component: Login},
     ]
   },
   {path: '/batch-edit-article', component: () => import("@/pages/article/BatchEditArticlePage.vue")},
   {path: '/test', component: () => import("@/pages/test/test.vue")},
-  {path: '/:pathMatch(.*)*', redirect: '/word'},
+  {path: '/:pathMatch(.*)*', redirect: '/'},
 ]
 
 const router = VueRouter.createRouter({
@@ -58,49 +60,14 @@ const router = VueRouter.createRouter({
   },
 })
 
-router.beforeEach((to: any, from: any) => {
-  return true
-  // console.log('beforeEach-to',to.path)
-  // console.log('beforeEach-from',from.path)
-  // const runtimeStore = useRuntimeStore()
-  //
-  // //footer下面的5个按钮，对跳不要用动画
-  // let noAnimation = [
-  //   '/pc/practice',
-  //   '/pc/dict',
-  //   '/mobile',
-  //   '/'
-  // ]
-  //
-  // if (noAnimation.indexOf(from.path) !== -1 && noAnimation.indexOf(to.path) !== -1) {
-  //   return true
-  // }
-  //
-  // const toDepth = routes.findIndex(v => v.path === to.path)
-  // const fromDepth = routes.findIndex(v => v.path === from.path)
-  // // const fromDepth = routeDeep.indexOf(from.path)
-  //
-  // if (toDepth > fromDepth) {
-  //   if (to.matched && to.matched.length) {
-  //     let def = to.matched[0].components.default
-  //     let toComponentName = def.name ?? def.__name
-  //     runtimeStore.updateExcludeRoutes({type: 'remove', value: toComponentName})
-  //     // console.log('删除', toComponentName)
-  //     // console.log('前进')
-  //     // console.log('删除', toComponentName)
-  //   }
-  // } else {
-  //   if (from.matched && from.matched.length) {
-  //     let def = from.matched[0].components.default
-  //     let fromComponentName = def.name ?? def.__name
-  //     runtimeStore.updateExcludeRoutes({type: 'add', value: fromComponentName})
-  //     // console.log('添加', fromComponentName)
-  //     // console.log('后退')
-  //   }
-  // }
-  // ...
-  // 返回 false 以取消导航
-  // return true
+router.beforeEach((to, from, next) => {
+ const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
+ 
+   if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
+     next('/login');
+   } else {
+     next()
+   }
 })
 
 

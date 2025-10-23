@@ -48,11 +48,11 @@ export default {
 	   try {
 		  const user = users.find(u => u.username === this.username)
 		  if (!user) {
-			this.error = '帐号不存在! \n 请联系管理员微信号:D_T_family'
+			this.error = '帐号不存在! \n 请点击上方蓝色链接“扫码联系”'
 			return
 		  }
 		  if (user.password !== this.password) {
-			this.error = '密码错误! \n 请联系管理员微信号:D_T_family'
+			this.error = '密码错误! \n 请请点击上方蓝色链接“扫码联系”'
 			return
 		  }
 

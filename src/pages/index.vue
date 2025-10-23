@@ -19,11 +19,12 @@ const {toggleTheme} = useTheme()
 
 <template>
   <div class="layout anim">
+  <template v-if="!$route.path.includes('/login')">
     <!--    第一个aside 占位用-->
     <div class="aside space" :class="{'expand':settingStore.sideExpand}"></div>
     <div class="aside anim fixed" :class="{'expand':settingStore.sideExpand}">
       <div class="top">
-        <Logo v-if="settingStore.sideExpand"/>
+        <!-- <Logo v-if="settingStore.sideExpand"/> -->
         <div class="row" @click="router.push('/')">
           <IconFluentHome20Regular/>
           <span v-if="settingStore.sideExpand">主页</span>
@@ -63,6 +64,7 @@ const {toggleTheme} = useTheme()
         </BaseIcon>
       </div>
     </div>
+    </template>
     <div class="flex-1 z-1 relative">
       <router-view></router-view>
     </div>

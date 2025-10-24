@@ -60,7 +60,7 @@ export default {
 		  // 添加认证状态存储
 		  localStorage.setItem('isAuthenticated', 'true')
 
-		  this.$router.push('/practice')
+		  this.$router.push('/')
 		  } catch (error) {
 				console.error('登录跳转失败:', error)
 				this.error = '登录失败，请重试'

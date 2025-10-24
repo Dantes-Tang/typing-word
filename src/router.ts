@@ -36,7 +36,6 @@ export const routes: RouteRecordRaw[] = [
       {path: 'book-detail', component: BookDetail},
       {path: 'book-list', component: BookList},
       {path: 'setting', component: Setting},
-//       {path: 'login', component: Login},
       {path: 'user', component: User},
       {path: 'login', name: 'Login', component: Login},
     ]
@@ -63,7 +62,7 @@ const router = VueRouter.createRouter({
 router.beforeEach((to, from, next) => {
  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
  
-   if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
+   if (to.path === '/' && !isAuthenticated) {
      next('/login');
    } else {
      next()

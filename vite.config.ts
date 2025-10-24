@@ -128,6 +128,9 @@ export default defineConfig(() => {
           fs: {
             strict: false,
           },
+		  mimeTypes: {
+		        'js': 'application/javascript',
+		      },
           proxy: {
             '/baidu': 'https://api.fanyi.baidu.com/api/trans/vip/translate'
           }

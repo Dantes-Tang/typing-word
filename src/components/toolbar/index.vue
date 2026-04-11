@@ -154,7 +154,8 @@ watch(() => store.load, n => {
   padding: 6rem 8rem;
 
   &:hover {
-    background: var(--color-main-active);
+    /* 顶部更偏暖色活泼：悬浮强调用橙色 */
+    background: var(--brand-accent);
     color: white;
   }
 }
@@ -183,18 +184,24 @@ watch(() => store.load, n => {
 
 header {
   width: var(--toolbar-width);
-  margin-top: 10rem;
-  background: var(--color-second-bg);
-  border-radius: 8rem;
-  margin-bottom: 30rem;
+  margin-top: 16rem;
+  /* 暖色活泼但极简：轻微暖色渐变 + 玻璃感 */
+  background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.92) 0%,
+      rgba(255, 247, 237, 0.92) 100%
+  );
+  border-radius: calc(var(--radius) + 6rem);
+  margin-bottom: 36rem;
   position: relative;
   z-index: 2;
-  padding: 4rem var(--space);
+  padding: 8rem var(--space);
   box-sizing: border-box;
   gap: 10rem;
-  border: 1px solid var(--color-item-border);
+  border: 1px solid rgba(245, 158, 11, 0.22);
   transition: all var(--anim-time);
   box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
 
   .content {
     min-height: var(--toolbar-height);
@@ -205,7 +212,7 @@ header {
     .dict-name {
       display: flex;
       max-width: 45%;
-      font-size: 17rem;
+      font-size: 20rem;
       position: relative;
     }
 
@@ -236,7 +243,7 @@ header {
         display: flex;
         align-items: center;
         position: relative;
-        background: var(--color-second-bg);
+        background: transparent;
       }
     }
   }
@@ -248,7 +255,11 @@ header {
     cursor: pointer;
     transition: all .5s;
     transform: translate3d(-50%, 100%, 0) rotate(180deg);
-    padding: 5rem;
+    padding: 10rem;
+    border-radius: 999rem;
+    background: rgba(255, 247, 237, 0.88);
+    border: 1px solid rgba(245, 158, 11, 0.22);
+    box-shadow: 0 6px 18px rgba(245, 158, 11, 0.18);
 
     &.down {
       transform: translate3d(-50%, 100%, 0) rotate(0);

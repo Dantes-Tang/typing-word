@@ -156,7 +156,8 @@ useStartKeyboardEventListener()
 
 <style scoped lang="scss">
 .practice-wrapper {
-  font-size: 13rem;
+  /* 整体练习区域字体略放大，方便小学生识别 */
+  font-size: 16rem;
   width: 100%;
   height: 100%;
   display: flex;

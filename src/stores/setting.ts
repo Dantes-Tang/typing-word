@@ -30,6 +30,7 @@ export interface SettingState {
   waitTimeForChangeWord: number
   autoNext: boolean
   dictationShowWordLength: boolean//默写时显示单词长度，即用下划线 _ 来显示每个字符
+  enableAnimation: boolean//是否开启动效（输入正确后显示鼓励手势和烟花）
   fontSize: {
     articleForeignFontSize: number,
     articleTranslateFontSize: number,
@@ -79,6 +80,7 @@ export const DefaultSettingState = (): SettingState => ({
   waitTimeForChangeWord: 300,
   autoNext: true,
   dictationShowWordLength: true,
+  enableAnimation: false,
   theme: 'auto',
   collapse: false,
   chapterWordNumber: DefaultChapterWordNumber,

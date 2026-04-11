@@ -99,12 +99,18 @@ onUnmounted(() => {
     position: relative;
     width: 100%;
     box-sizing: border-box;
-    border-radius: 10rem;
-    background: var(--color-second-bg);
+    border-radius: calc(var(--radius) + 6rem);
+    /* 暖色活泼但克制：与 Toolbar 同步的轻微暖色渐变 */
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.92) 0%,
+        rgba(255, 247, 237, 0.92) 100%
+    );
     padding: 3rem var(--space) 6rem var(--space);
     z-index: 2;
-    border: 1px solid var(--color-item-border);
+    border: 1px solid rgba(245, 158, 11, 0.22);
     box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
 
     .stat {
       margin-top: 8rem;
@@ -117,12 +123,22 @@ onUnmounted(() => {
         align-items: center;
         gap: 5rem;
         width: 80rem;
-        color: gray;
+        color: var(--color-font-3);
+
+        .num {
+          font-size: 20rem;
+          font-weight: 600;
+          color: var(--color-font-1);
+        }
+
+        .name {
+          font-size: 16rem;
+        }
 
         .line {
           height: 1px;
           width: 100%;
-          background: var(--color-sub-gray);
+          background: rgba(245, 158, 11, 0.22);
         }
       }
     }
@@ -138,7 +154,8 @@ onUnmounted(() => {
   }
 
   :deep(.el-progress-bar__inner) {
-    background: var(--color-scrollbar);
+    /* 进度条用暖色更“活泼”，同时保持现代干净 */
+    background: rgba(245, 158, 11, 0.85);
   }
 
 }

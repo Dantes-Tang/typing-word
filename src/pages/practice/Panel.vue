@@ -234,15 +234,20 @@ $header-height: 50rem;
 }
 
 .panel {
-  border-radius: 8rem;
+  border-radius: calc(var(--radius) + 4rem);
   width: var(--panel-width);
-  background: var(--color-second-bg);
+  /* 与主界面保持一致的卡片风格：浅色 + 轻微暖色调 */
+  background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.96) 0%,
+      rgba(255, 250, 240, 0.96) 100%
+  );
   height: 100%;
   display: flex;
   flex-direction: column;
   transition: all .3s;
   z-index: 1;
-  border: 1px solid var(--color-item-border);
+  border: 1px solid rgba(148, 163, 184, 0.35);
   box-shadow: var(--shadow);
 
 
@@ -254,7 +259,7 @@ $header-height: 50rem;
     align-items: center;
     justify-content: space-between;
     padding: 10rem 15rem;
-    border-bottom: 1px solid #e1e1e1;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.35);
     gap: 15rem;
 
     .close {
@@ -272,11 +277,11 @@ $header-height: 50rem;
         word-break: keep-all;
         font-size: 16rem;
         transition: all .3s;
-        color: gray;
+        color: var(--color-font-3);
 
         &.active {
-          color: var(--color-main-active);
-          font-weight: bold;
+          color: var(--brand-accent);
+          font-weight: 600;
         }
       }
     }

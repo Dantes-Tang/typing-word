@@ -97,7 +97,7 @@ onMounted(() => {
   height: 100vh;
   left: 0;
   top: 0;
-  background-color: var(--color-main-bg);
+  background: var(--bg-gradient, var(--color-main-bg));
 
   canvas {
     width: 100vw;

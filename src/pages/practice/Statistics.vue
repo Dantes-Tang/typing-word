@@ -128,15 +128,20 @@ const isEnd = $computed(() => {
 <style scoped lang="scss">
 @import "@/assets/css/style";
 
-$card-radius: 8rem;
-$dark-second-bg: rgb(60, 63, 65);
-$item-hover: rgb(75, 75, 75);
+$card-radius: calc(var(--radius) + 6rem);
 
 .statistics {
   width: 800rem;
   padding: var(--space);
-  background: $dark-second-bg;
+  /* 章节统计使用与主界面一致的浅色暖调卡片风格 */
+  background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.98) 0%,
+      rgba(255, 247, 237, 0.96) 100%
+  );
   border-radius: $card-radius;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: var(--shadow);
 
   $header-height: 40rem;
   $footer-height: 60rem;
@@ -162,7 +167,7 @@ $item-hover: rgb(75, 75, 75);
       display: flex;
       flex-direction: column;
       border-radius: $card-radius;
-      background: $item-hover;
+      background: rgba(248, 250, 252, 0.96);
       flex: 1;
 
       .wrong-words-wrapper {
@@ -183,13 +188,12 @@ $item-hover: rgb(75, 75, 75);
           display: inline-block;
           border-radius: 6rem;
           padding: 5rem 15rem;
-          background: $dark-second-bg;
+          background: rgba(255, 255, 255, 0.96);
         }
       }
 
       .notice {
-        $main: rgb(64,158,255);
-        background: $main;
+        background: rgba(34, 197, 94, 0.14);
         height: 40rem;
         display: flex;
         gap: 10rem;

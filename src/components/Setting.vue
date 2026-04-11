@@ -344,6 +344,19 @@ function importData(e) {
           <label class="item-title">其他设置</label>
         </div>
         <div class="row">
+          <label class="sub-title">是否开启动效</label>
+          <div class="wrapper">
+            <el-switch v-model="settingStore.enableAnimation"
+                       inline-prompt
+                       active-text="开"
+                       inactive-text="关"
+            />
+          </div>
+        </div>
+        <div class="desc">
+          开启后，输入正确时会显示鼓励手势和烟花效果，持续2秒后显示下一个单词
+        </div>
+        <div class="row">
           <label class="sub-title">是否自动切换到下一个单词</label>
           <div class="wrapper">
             <el-switch v-model="settingStore.autoNext"

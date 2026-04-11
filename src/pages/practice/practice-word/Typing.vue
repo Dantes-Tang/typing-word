@@ -10,6 +10,8 @@ import { emitter, EventKey } from "@/utils/eventBus.ts";
 import { cloneDeep } from "lodash-es";
 import { onUnmounted, watch, onMounted } from "vue";
 import Tooltip from "@/components/Tooltip.vue";
+import CelebrationGesture from "@/components/CelebrationGesture.vue";
+import WordFireworks from "@/components/WordFireworks.vue";
 
 interface IProps {
   word: Word,
@@ -28,6 +30,7 @@ let input = $ref('')
 let wrong = $ref('')
 let showFullWord = $ref(false)
 let waitNext = $ref(false)
+let showAnimation = $ref(false)
 //输入锁定，因为跳转到下一个单词有延时，如果重复在延时期间内重复输入，导致会跳转N次
 let inputLock = false
 let wordRepeatCount = 0
@@ -49,6 +52,7 @@ watch(() => props.word, () => {
   wrong = input = ''
   wordRepeatCount = 0
   waitNext = inputLock = false
+  showAnimation = false
   if (settingStore.wordSound) {
     volumeIconRef?.play(400, true)
   }
@@ -116,25 +120,40 @@ async function onTyping(e: KeyboardEvent) {
 
   if (isWordRight) {
     playCorrect()
-    if (settingStore.repeatCount == 100) {
-      if (settingStore.repeatCustomCount <= wordRepeatCount + 1) {
+    
+    // 处理下一个单词的逻辑
+    const handleNext = () => {
+      if (settingStore.enableAnimation) {
+        // 开启动效：显示动画，2秒后再继续（自动切换，忽略autoNext设置）
+        showAnimation = true
+        inputLock = true
+        setTimeout(() => {
+          showAnimation = false
+          emit('next')
+          inputLock = false
+        }, 2000)
+      } else {
+        // 不开启动效：保持原来的逻辑
         if (settingStore.autoNext) {
           setTimeout(() => emit('next'), settingStore.waitTimeForChangeWord)
         } else {
           waitNext = true
           inputLock = false
         }
+      }
+    }
+    
+    if (settingStore.repeatCount == 100) {
+      if (settingStore.repeatCustomCount <= wordRepeatCount + 1) {
+        // 完成当前单词的重复次数
+        handleNext()
       } else {
         repeat()
       }
     } else {
       if (settingStore.repeatCount <= wordRepeatCount + 1) {
-        if (settingStore.autoNext) {
-          setTimeout(() => emit('next'), settingStore.waitTimeForChangeWord)
-        } else {
-          waitNext = true
-          inputLock = false
-        }
+        // 完成当前单词的重复次数
+        handleNext()
       } else {
         repeat()
       }
@@ -221,6 +240,8 @@ defineExpose({del, showWord, hideWord, play})
     <div class="phonetic" v-if="settingStore.wordSoundType === 'us' && word.usphone">[{{ word.usphone }}]</div>
     <div class="phonetic" v-if="settingStore.wordSoundType === 'uk' && word.ukphone">[{{ word.ukphone }}]</div>
   </div>
+  <CelebrationGesture :show="showAnimation"/>
+  <WordFireworks :show="showAnimation"/>
 </template>
 
 <style scoped lang="scss">
@@ -234,10 +255,11 @@ defineExpose({del, showWord, hideWord, play})
   align-items: center;
   justify-content: center;
   word-break: break-word;
+  gap: 14rem;
 
   .phonetic, .translate {
     font-size: 20rem;
-    margin-left: -30rem;
+    margin-left: 0;
     transition: all .3s;
   }
 
@@ -273,21 +295,28 @@ defineExpose({del, showWord, hideWord, play})
   .word-wrapper {
     display: flex;
     align-items: center;
-    gap: 10rem;
+    gap: 12rem;
     color: var(--color-font-1);
+    background: var(--color-second-bg);
+    border: 1px solid var(--color-item-border);
+    border-radius: calc(var(--radius) + 6rem);
+    padding: 18rem 20rem;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(8px);
 
     .word {
       font-size: 48rem;
       line-height: 1;
       font-family: var(--word-font-family);
       letter-spacing: 5rem;
+      color: var(--color-font-1);
 
       .input {
-        color: rgb(22, 163, 74);
+        color: var(--brand-secondary);
       }
 
       .wrong {
-        color: rgba(red, 0.6);
+        color: rgba(239, 68, 68, 0.85);
       }
 
       &.is-wrong {
